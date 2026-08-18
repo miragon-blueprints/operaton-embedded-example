@@ -1,5 +1,11 @@
 # Operaton Bike-Leasing Blueprint
 
+> [!NOTE]
+> **🚧 Work in progress.** This is a **solution template** — a reference to fork and build on, for
+> our consultants and anyone else — not a product that ships. It's still being fleshed out, so parts
+> may be incomplete and it may not yet fully demonstrate what it's meant to. Treat it as a
+> living example, and expect it to keep evolving.
+
 A ready-to-fork **starting point** for automating a business process on
 [Operaton](https://operaton.org) (the community-driven fork of Camunda 7) with an **embedded engine**,
 Spring Boot and Kotlin — one complete, runnable, production-shaped BPMN service you can clone and make
@@ -121,6 +127,13 @@ If the requested bike is out of stock, the `Clarify alternative with customer` u
 
 Bike availability itself is decided by a `BikeDealerPort` outbound adapter (`checkAvailability` /
 `order`) whose small out-of-stock deny-list drives the branch.
+
+## Incident demo
+
+Want to teach **transaction boundaries, retries and incidents**? Submit a request for the poison bike
+`BIKE-FAIL`: the simulated dealer "outage" fails the *Order bike from dealer* job, its retries count
+down (`R3/PT10S`), and an **incident** appears in the Cockpit to analyze and retry. A ready-to-run
+Bruno collection lives in `bruno/06-incident-demo/`.
 
 ## Contributing
 
