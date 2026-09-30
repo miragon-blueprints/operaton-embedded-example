@@ -20,15 +20,6 @@ springBoot {
     buildInfo()
 }
 
-configurations.testRuntimeClasspath {
-    resolutionStrategy.eachDependency {
-        if (requested.group == "org.jetbrains.kotlin" && requested.name == "kotlin-compiler-embeddable") {
-            useVersion(libs.versions.konsist.kotlin.compiler.version.get())
-            because("Konsist 0.17.3 cannot parse sources with kotlin-compiler-embeddable 2.4.20")
-        }
-    }
-}
-
 dependencies {
     implementation(libs.bundles.defaultService)
     implementation(libs.bundles.database)
@@ -39,6 +30,7 @@ dependencies {
     testImplementation(libs.bundles.operatonProcessTest)
     testImplementation(libs.bpmn.to.code.testing)
     testImplementation(project(":service:common-architecture-tests"))
+    testRuntimeOnly(libs.konsist.kotlin.compiler)
 }
 
 // Generates the typed `*ProcessApi` objects (element ids, messages, timers, variables, …) from the

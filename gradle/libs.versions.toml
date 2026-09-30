@@ -41,6 +41,7 @@ bpmn-to-code-testing = { module = "io.miragon:bpmn-to-code-testing", version.ref
 # Architecture tests
 archunit = { module = "com.tngtech.archunit:archunit", version.ref = "archunit_version" }
 konsist = { module = "com.lemonappdev:konsist", version.ref = "konsist_version" }
+konsist-kotlin-compiler = { module = "org.jetbrains.kotlin:kotlin-compiler-embeddable", version.ref = "konsist_kotlin_compiler_version" }
 
 # Testing
 spring_test = { module = "org.springframework.boot:spring-boot-starter-test", version.ref = "spring_version" }
