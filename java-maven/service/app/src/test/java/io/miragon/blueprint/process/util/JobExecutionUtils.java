@@ -1,6 +1,6 @@
 package io.miragon.blueprint.process.util;
 
-import io.miragon.bpmn.runtime.ElementId;
+import io.miragon.bpmn.runtime.FlowNode;
 import java.util.List;
 import org.operaton.bpm.engine.ProcessEngine;
 import org.operaton.bpm.engine.runtime.Job;
@@ -20,15 +20,15 @@ public final class JobExecutionUtils {
      * trace of the process and fails loudly (no job found) if the expected continuation is missing —
      * which is the safer, more readable choice for the deterministic, linear parts of a flow.
      */
-    public static void executeJobFor(ProcessEngine engine, ElementId activityId) {
+    public static void executeJobFor(ProcessEngine engine, FlowNode activity) {
         Job job = engine.getManagementService()
                 .createJobQuery()
                 .messages()
-                .activityId(activityId.getValue())
+                .activityId(activity.getId().getValue())
                 .singleResult();
         if (job == null) {
             throw new IllegalArgumentException(
-                    "no async-continuation job found for activity '" + activityId.getValue() + "'");
+                    "no async-continuation job found for activity '" + activity.getId().getValue() + "'");
         }
         engine.getManagementService().executeJob(job.getId());
     }

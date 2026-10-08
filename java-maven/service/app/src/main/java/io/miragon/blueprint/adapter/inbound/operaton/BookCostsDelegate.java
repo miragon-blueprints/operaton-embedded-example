@@ -1,6 +1,6 @@
 package io.miragon.blueprint.adapter.inbound.operaton;
 
-import io.miragon.blueprint.adapter.process.CancelBikeOrderProcessApi.Variables;
+import io.miragon.blueprint.adapter.process.CancelBikeOrderProcessApi.FlowNodes;
 import io.miragon.blueprint.application.port.inbound.BookCancellationCostsUseCase;
 import io.miragon.blueprint.domain.bike.OrderId;
 import org.operaton.bpm.engine.delegate.DelegateExecution;
@@ -18,7 +18,7 @@ public class BookCostsDelegate extends BaseDelegate {
     @Override
     protected void executeTask(DelegateExecution execution) {
         OrderId orderId = new OrderId(
-                (String) execution.getVariable(Variables.StartEventCancellationRequired.ORDER_ID.getValue()));
+                (String) execution.getVariable(FlowNodes.StartEventCancellationRequired.Variables.ORDER_ID.getValue()));
         useCase.bookCosts(orderId);
     }
 }

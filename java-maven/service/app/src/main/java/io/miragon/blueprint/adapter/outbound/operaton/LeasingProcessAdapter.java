@@ -1,8 +1,7 @@
 package io.miragon.blueprint.adapter.outbound.operaton;
 
-import io.miragon.blueprint.adapter.process.BikeLeasingProcessProcessApi.Elements;
-import io.miragon.blueprint.adapter.process.BikeLeasingProcessProcessApi.Messages;
-import io.miragon.blueprint.adapter.process.BikeLeasingProcessProcessApi.Variables;
+import io.miragon.blueprint.adapter.process.BikeLeasingProcessProcessApi.FlowNodes;
+import io.miragon.blueprint.adapter.process.Messages;
 import io.miragon.blueprint.application.port.outbound.LeasingProcess;
 import io.miragon.blueprint.domain.bike.BikeId;
 import io.miragon.blueprint.domain.leasing.ApplicationId;
@@ -34,12 +33,12 @@ public class LeasingProcessAdapter implements LeasingProcess {
     @Override
     public void submitRequest(LeasingApplication application) {
         Map<String, Object> variables = new HashMap<>();
-        variables.put(Variables.StartEventLeasingRequestReceived.APPLICATION_ID.getValue(),
+        variables.put(FlowNodes.StartEventLeasingRequestReceived.Variables.APPLICATION_ID.getValue(),
                 application.id().value().toString());
-        variables.put(Variables.StartEventLeasingRequestReceived.BIKE_ID.getValue(), application.bikeId().value());
-        variables.put(Variables.StartEventLeasingRequestReceived.MONTHLY_NET_INCOME.getValue(),
+        variables.put(FlowNodes.StartEventLeasingRequestReceived.Variables.BIKE_ID.getValue(), application.bikeId().value());
+        variables.put(FlowNodes.StartEventLeasingRequestReceived.Variables.MONTHLY_NET_INCOME.getValue(),
                 application.monthlyNetIncome());
-        variables.put(Variables.StartEventLeasingRequestReceived.AGE.getValue(), application.age());
+        variables.put(FlowNodes.StartEventLeasingRequestReceived.Variables.AGE.getValue(), application.age());
         runtimeService.startProcessInstanceByMessage(
                 Messages.MIRAVELO_LEASING_REQUEST_RECEIVED.getValue(),
                 application.id().value().toString(),
@@ -68,12 +67,12 @@ public class LeasingProcessAdapter implements LeasingProcess {
     @Override
     public void completeAlternativeClarification(ApplicationId id, boolean alternativeFound, BikeId bikeId) {
         Map<String, Object> variables = new HashMap<>();
-        variables.put(Variables.UserTaskClarifyAlternative.ALTERNATIVE_FOUND.getValue(), alternativeFound);
+        variables.put(FlowNodes.UserTaskClarifyAlternative.Variables.ALTERNATIVE_FOUND.getValue(), alternativeFound);
         // The re-order reads the same start-injected bike variable, so reuse its name.
         if (bikeId != null) {
-            variables.put(Variables.StartEventLeasingRequestReceived.BIKE_ID.getValue(), bikeId.value());
+            variables.put(FlowNodes.StartEventLeasingRequestReceived.Variables.BIKE_ID.getValue(), bikeId.value());
         }
-        completeTask(id.value().toString(), Elements.USER_TASK_CLARIFY_ALTERNATIVE.getValue(), variables);
+        completeTask(id.value().toString(), FlowNodes.UserTaskClarifyAlternative.ELEMENT_ID, variables);
     }
 
     /** Correlates {@code messageName} to the single running instance carrying {@code businessKey}. */

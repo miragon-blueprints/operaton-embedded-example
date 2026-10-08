@@ -9,8 +9,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-import io.miragon.blueprint.adapter.process.BikeLeasingProcessProcessApi.Elements;
-import io.miragon.blueprint.adapter.process.BikeLeasingProcessProcessApi.Messages;
+import io.miragon.blueprint.adapter.process.BikeLeasingProcessProcessApi.FlowNodes;
+import io.miragon.blueprint.adapter.process.Messages;
 import io.miragon.blueprint.domain.bike.BikeId;
 import io.miragon.blueprint.domain.leasing.ApplicationId;
 import io.miragon.blueprint.domain.leasing.LeasingApplication;
@@ -67,7 +67,7 @@ class LeasingProcessAdapterTest {
         // then: the clarify-alternative task is located by business key and completed with the decision variables
         verify(taskService).createTaskQuery();
         verify(query).processInstanceBusinessKey(id.value().toString());
-        verify(query).taskDefinitionKey(Elements.USER_TASK_CLARIFY_ALTERNATIVE.getValue());
+        verify(query).taskDefinitionKey(FlowNodes.UserTaskClarifyAlternative.ELEMENT_ID);
         verify(taskService).complete(
                 eq("task-1"),
                 argThat(vars -> Boolean.TRUE.equals(vars.get("alternativeFound"))

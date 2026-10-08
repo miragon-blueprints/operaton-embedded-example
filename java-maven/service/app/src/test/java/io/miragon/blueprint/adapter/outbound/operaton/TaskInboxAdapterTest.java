@@ -6,7 +6,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import io.miragon.blueprint.adapter.process.BikeLeasingProcessProcessApi.Elements;
+import io.miragon.blueprint.adapter.process.BikeLeasingProcessProcessApi.FlowNodes;
 import io.miragon.blueprint.application.port.outbound.TaskInboxPort;
 import io.miragon.blueprint.domain.leasing.ApplicationId;
 import java.util.Date;
@@ -43,7 +43,7 @@ class TaskInboxAdapterTest {
         // then: the open task surfaces as its application id, queried by the clarify-alternative key
         assertThat(result).hasSize(1);
         assertThat(result.get(0).applicationId()).isEqualTo(ApplicationId.of(applicationId));
-        verify(taskQuery).taskDefinitionKey(Elements.USER_TASK_CLARIFY_ALTERNATIVE.getValue());
+        verify(taskQuery).taskDefinitionKey(FlowNodes.UserTaskClarifyAlternative.ELEMENT_ID);
     }
 
     @Test

@@ -1,6 +1,6 @@
 package io.miragon.blueprint.adapter.inbound.operaton;
 
-import io.miragon.blueprint.adapter.process.CancelBikeOrderProcessApi.Variables;
+import io.miragon.blueprint.adapter.process.CancelBikeOrderProcessApi.FlowNodes;
 import io.miragon.blueprint.application.port.inbound.RequestOrderCancellationUseCase;
 import io.miragon.blueprint.domain.bike.OrderId;
 import org.operaton.bpm.engine.delegate.DelegateExecution;
@@ -19,9 +19,9 @@ public class RequestCancellationDelegate extends BaseDelegate {
     protected void executeTask(DelegateExecution execution) {
         // `orderId` is handed to the cancelBikeOrder sub-process by the calling activity.
         OrderId orderId = new OrderId(
-                (String) execution.getVariable(Variables.StartEventCancellationRequired.ORDER_ID.getValue()));
+                (String) execution.getVariable(FlowNodes.StartEventCancellationRequired.Variables.ORDER_ID.getValue()));
         boolean cancellationPossible = useCase.requestCancellation(orderId);
-        execution.setVariable(Variables.ServiceTaskRequestCancellation.CANCELLATION_POSSIBLE.getValue(),
+        execution.setVariable(FlowNodes.ServiceTaskRequestCancellation.Variables.CANCELLATION_POSSIBLE.getValue(),
                 cancellationPossible);
     }
 }

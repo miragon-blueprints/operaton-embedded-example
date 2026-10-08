@@ -1,6 +1,7 @@
 package io.miragon.blueprint.process.model;
 
 import io.miragon.bpmn.domain.shared.ServiceTaskDefinition;
+import io.miragon.bpmn.domain.shared.TaskImplementation;
 import io.miragon.bpmn.domain.validation.SingleModelValidationRule;
 import io.miragon.bpmn.domain.validation.model.Severity;
 import io.miragon.bpmn.domain.validation.model.SingleModelValidationContext;
@@ -17,8 +18,6 @@ import java.util.List;
  * {@code MISSING_SERVICE_TASK_IMPLEMENTATION} rule.
  */
 public class ServiceTaskDelegateExpressionRule implements SingleModelValidationRule {
-
-    private static final String DELEGATE_EXPRESSION_KIND = "DELEGATE_EXPRESSION";
 
     @Override
     public String getId() {
@@ -44,7 +43,6 @@ public class ServiceTaskDelegateExpressionRule implements SingleModelValidationR
     }
 
     private boolean usesDelegateExpression(ServiceTaskDefinition task) {
-        Object kind = task.getEngineSpecificProperties().get(ServiceTaskDefinition.IMPL_KIND_KEY);
-        return DELEGATE_EXPRESSION_KIND.equals(kind);
+        return task.getImplementation() instanceof TaskImplementation.DelegateExpression;
     }
 }

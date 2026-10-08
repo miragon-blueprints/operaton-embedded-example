@@ -1,6 +1,6 @@
 package io.miragon.blueprint.adapter.inbound.operaton;
 
-import io.miragon.blueprint.adapter.process.BikeLeasingProcessProcessApi.Variables;
+import io.miragon.blueprint.adapter.process.BikeLeasingProcessProcessApi.FlowNodes;
 import org.operaton.bpm.engine.delegate.DelegateExecution;
 import org.operaton.bpm.engine.delegate.ExecutionListener;
 import org.slf4j.Logger;
@@ -23,8 +23,8 @@ public class BikeOrderAuditListener implements ExecutionListener {
 
     @Override
     public void notify(DelegateExecution execution) {
-        Object orderId = execution.getVariable(Variables.ServiceTaskOrderBike.ORDER_ID.getValue());
-        Object bikeAvailable = execution.getVariable(Variables.ServiceTaskOrderBike.BIKE_AVAILABLE.getValue());
+        Object orderId = execution.getVariable(FlowNodes.ServiceTaskOrderBike.Variables.ORDER_ID.getValue());
+        Object bikeAvailable = execution.getVariable(FlowNodes.ServiceTaskOrderBike.Variables.BIKE_AVAILABLE.getValue());
         log.info("Bike order finished for application '{}': orderId={}, bikeAvailable={}",
                 execution.getProcessBusinessKey(), orderId, bikeAvailable);
     }
