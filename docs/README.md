@@ -31,7 +31,7 @@ template.
 | [0010](adr/0010-flyway-for-database-migrations.md) | Flyway for versioned schema migrations; Hibernate switches to `validate`. |
 | [0011](adr/0011-build-and-deployment-approach.md) | Build & deployment: `bootBuildImage` OCI image + Postgres via compose. |
 | [0012](adr/0012-polling-for-eventual-consistency-in-e2e-tests.md) | Poll for eventual consistency in end-to-end tests. |
-| [0013](adr/0013-two-stack-variants-side-by-side-on-main.md) | Kotlin + Gradle (recommended) and Java + Maven side by side on `main`, sharing the models. |
+| [0013](adr/0013-two-stack-variants-side-by-side-on-main.md) | Kotlin + Gradle (recommended) and Java + Maven side by side on `main`, each self-contained. |
 
 ## 📊 Diagrams
 
