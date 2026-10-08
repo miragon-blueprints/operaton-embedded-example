@@ -8,8 +8,6 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Map;
-import java.util.TreeMap;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,7 +16,6 @@ import tools.jackson.core.util.DefaultIndenter;
 import tools.jackson.core.util.DefaultPrettyPrinter;
 import tools.jackson.databind.SerializationFeature;
 import tools.jackson.databind.json.JsonMapper;
-import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.node.ObjectNode;
 
 /**
@@ -59,10 +56,6 @@ class OpenApiSpecExportTest {
         // Drop the `servers` block — springdoc fills it with the random test port, which would make
         // the drift gate flap. API consumers resolve the base URL from their own configuration anyway.
         tree.remove("servers");
-        // springdoc's component-schema map order is not guaranteed stable across classpaths — adding
-        // the Operaton web client reordered it — so sort the schemas by name to keep the export
-        // byte-identical regardless. Paths and property order are already deterministic.
-        sortComponentSchemas(tree);
         String pretty = deterministicMapper.writeValueAsString(tree) + "\n";
 
         // then: the result contains our /api paths and is written to the committed location
@@ -72,18 +65,6 @@ class OpenApiSpecExportTest {
         Files.writeString(target, pretty);
     }
 
-    /** Reorders {@code components.schemas} alphabetically by name for a deterministic, stable export. */
-    private void sortComponentSchemas(ObjectNode root) {
-        if (root.get("components") instanceof ObjectNode components
-                && components.get("schemas") instanceof ObjectNode schemas) {
-            Map<String, JsonNode> byName = new TreeMap<>();
-            schemas.properties().forEach(entry -> byName.put(entry.getKey(), entry.getValue()));
-            ObjectNode sorted = deterministicMapper.createObjectNode();
-            byName.forEach(sorted::set);
-            components.set("schemas", sorted);
-        }
-    }
-
     private String fetch(String url) throws Exception {
         HttpRequest request = HttpRequest.newBuilder(URI.create(url)).GET().build();
         HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
@@ -91,17 +72,17 @@ class OpenApiSpecExportTest {
         return response.body();
     }
 
-    /** Walk up from the module working directory until the repo root (the one dir with an {@code openapi/}). */
+    /** Walk up from the module working directory until the directory holding the shared {@code openapi/} contract is found. */
     private Path repoRoot() {
         Path dir = Path.of(System.getProperty("user.dir")).toAbsolutePath();
         while (dir != null) {
-            if (Files.isDirectory(dir.resolve("openapi")) && Files.exists(dir.resolve("pom.xml"))) {
+            if (Files.isDirectory(dir.resolve("openapi"))) {
                 return dir;
             }
             dir = dir.getParent();
         }
         throw new IllegalStateException(
-                "could not locate the repo root (no openapi/ dir with pom.xml above "
+                "could not locate the repo root (no openapi directory found above "
                         + System.getProperty("user.dir") + ")");
     }
 }

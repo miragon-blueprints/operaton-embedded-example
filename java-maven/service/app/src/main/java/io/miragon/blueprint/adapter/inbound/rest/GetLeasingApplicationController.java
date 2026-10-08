@@ -1,10 +1,13 @@
 package io.miragon.blueprint.adapter.inbound.rest;
 
+import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.miragon.blueprint.application.port.inbound.GetLeasingApplicationQuery;
 import io.miragon.blueprint.domain.leasing.ApplicationId;
 import io.miragon.blueprint.domain.leasing.LeasingApplication;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,19 +34,20 @@ public class GetLeasingApplicationController {
     }
 
     public record LeasingApplicationDto(
-            String applicationId,
-            String customerName,
-            String email,
-            int age,
-            double monthlyNetIncome,
-            String bikeId,
-            String bikeModel,
-            String status,
-            String orderId,
-            String contractId,
+            @Schema(requiredMode = REQUIRED) String applicationId,
+            @Schema(requiredMode = REQUIRED) String customerName,
+            @Schema(requiredMode = REQUIRED) String email,
+            @Schema(requiredMode = REQUIRED) int age,
+            @Schema(requiredMode = REQUIRED) double monthlyNetIncome,
+            @Schema(requiredMode = REQUIRED) String bikeId,
+            @Schema(nullable = true) String bikeModel,
+            @Schema(requiredMode = REQUIRED) String status,
+            @Schema(nullable = true) String orderId,
+            @Schema(nullable = true) String contractId,
             // Force ISO-8601 string form: Jackson 3 (SB4) defaults to a numeric array, but the Operaton
             // webapp serves /api with its own Jackson mapper that ignores our global date-time config, so
             // the format is pinned at the field to keep the payload in sync with the springdoc contract.
+            @Schema(requiredMode = REQUIRED)
             @JsonFormat(shape = JsonFormat.Shape.STRING)
             LocalDateTime createdAt) {
     }
