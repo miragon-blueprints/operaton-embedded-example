@@ -11,7 +11,7 @@ are bound to **Java + Maven** and must be able to use the blueprint without know
 
 Options considered for offering the Java + Maven version:
 
-- **A movable `java-maven` git tag**, regenerated from `main` by a playbook. This was the first
+- **A movable git tag** holding the Java + Maven version, regenerated from `main` by a playbook. This was the first
   approach. Workflows and Dependabot only act on the default branch, so the tag had no CI and no
   dependency updates, and it fell behind `main` silently (five commits and a `bpmn-to-code` major
   version within three weeks).
@@ -72,6 +72,6 @@ alone; such a gate would mostly produce noise. The gates compare observable beha
   ([ADR-0007](0007-two-architecture-test-tools-archunit-and-konsist.md)).
 - Java records carry no nullability, so the Java DTOs declare it with annotations to produce the same
   `required` arrays and nullable types the Kotlin types yield.
-- The `java-maven` tag is deleted once this layout is on `main`; `java-maven/` replaces it.
+- The tag that used to hold the Java + Maven version is removed; the `java-maven/` directory replaces it.
 - Earlier ADRs name commands and paths as they were when written (`./gradlew …`, `service/app/…`);
   they now live under `kotlin-gradle/`, with Maven equivalents in `java-maven/README.md`.
