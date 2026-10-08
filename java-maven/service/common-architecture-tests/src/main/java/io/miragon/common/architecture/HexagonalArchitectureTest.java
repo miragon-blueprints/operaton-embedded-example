@@ -39,6 +39,7 @@ public abstract class HexagonalArchitectureTest {
             "java..",
             "org.springframework..",
             "org.slf4j..",
+            "com.fasterxml.jackson..",
             "", // allows the usage of primitive types
     };
 
