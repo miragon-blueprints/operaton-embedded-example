@@ -1,6 +1,7 @@
 package io.miragon.blueprint.application.service;
 
 import static io.miragon.blueprint.domain.leasing.TestObjectBuilder.testLeasingApplication;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.mock;
@@ -14,6 +15,7 @@ import io.miragon.blueprint.application.port.outbound.LeasingApplicationReposito
 import io.miragon.blueprint.application.port.outbound.LeasingProcess;
 import io.miragon.blueprint.domain.bike.Bike;
 import io.miragon.blueprint.domain.bike.BikeId;
+import io.miragon.blueprint.domain.leasing.ApplicationId;
 import io.miragon.blueprint.domain.leasing.LeasingApplication;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -44,6 +46,22 @@ class SelectAlternativeServiceTest {
         verify(bikePortfolio).save(new Bike(new BikeId("BIKE-ALT"), "Aero Road 700"));
         verify(repository).save(argThat(app -> app.bikeId().equals(new BikeId("BIKE-ALT"))));
         verify(process).completeAlternativeClarification(application.id(), true, new BikeId("BIKE-ALT"));
+        verifyNoMoreInteractions(repository, bikePortfolio, process);
+    }
+
+    @Test
+    void anUnknownApplicationIsReportedWithItsIdAndLeavesTheTaskUntouched() {
+
+        // given: no application for the id
+        ApplicationId unknownId = ApplicationId.of("123e4567-e89b-12d3-a456-426614174000");
+        when(repository.findById(unknownId)).thenReturn(Optional.empty());
+
+        // when / then: the selection fails naming the application
+        assertThatThrownBy(() -> underTest.selectAlternative(
+                new SelectAlternativeUseCase.Command(unknownId, false, null, null)))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("Unknown application ApplicationId(value=123e4567-e89b-12d3-a456-426614174000)");
+        verify(repository).findById(unknownId);
         verifyNoMoreInteractions(repository, bikePortfolio, process);
     }
 

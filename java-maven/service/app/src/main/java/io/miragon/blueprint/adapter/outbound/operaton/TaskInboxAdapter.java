@@ -6,13 +6,12 @@ import io.miragon.blueprint.domain.leasing.ApplicationId;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import org.operaton.bpm.engine.RuntimeService;
 import org.operaton.bpm.engine.TaskService;
-import org.operaton.bpm.engine.runtime.ProcessInstance;
 import org.operaton.bpm.engine.task.Task;
 import org.springframework.stereotype.Component;
 
@@ -66,10 +65,11 @@ public class TaskInboxAdapter implements TaskInboxPort {
         if (processInstanceIds.isEmpty()) {
             return Map.of();
         }
-        return runtimeService.createProcessInstanceQuery()
+        Map<String, String> businessKeys = new HashMap<>();
+        runtimeService.createProcessInstanceQuery()
                 .processInstanceIds(new HashSet<>(processInstanceIds))
                 .list()
-                .stream()
-                .collect(Collectors.toMap(ProcessInstance::getId, ProcessInstance::getBusinessKey));
+                .forEach(instance -> businessKeys.put(instance.getId(), instance.getBusinessKey()));
+        return businessKeys;
     }
 }

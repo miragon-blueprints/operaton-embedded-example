@@ -12,6 +12,8 @@ import io.mockk.every
 import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest
 import org.springframework.http.MediaType
@@ -68,4 +70,51 @@ class SubmitLeasingRequestControllerTest {
         verify { useCase.submit(expectedCommand) }
         confirmVerified(useCase)
     }
+
+    @ParameterizedTest
+    @ValueSource(strings = ["customerName", "email", "bikeId", "bikeModel"])
+    fun `a request without a required text field is rejected as unreadable`(missingField: String) {
+
+        // given: an otherwise valid request that lacks one required field
+        val input = validInput() - missingField
+
+        // when: the request is performed
+        val response = mockMvc.perform(submission(input)).andReturn()
+
+        // then: it is a bad request that never reaches the use case
+        assertThat(response.response.status).isEqualTo(400)
+        assertThat(response.response.contentAsString).contains("Failed to read request")
+        confirmVerified(useCase)
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = ["customerName", "email", "bikeId", "bikeModel"])
+    fun `a request with a required text field set to null is rejected as unreadable`(nullField: String) {
+
+        // given: an otherwise valid request that carries null for one required field
+        val input = validInput() + (nullField to null)
+
+        // when: the request is performed
+        val response = mockMvc.perform(submission(input)).andReturn()
+
+        // then: it is a bad request that never reaches the use case
+        assertThat(response.response.status).isEqualTo(400)
+        assertThat(response.response.contentAsString).contains("Failed to read request")
+        confirmVerified(useCase)
+    }
+
+    private fun validInput(): Map<String, Any?> =
+        mapOf(
+            "customerName" to "John Doe",
+            "email" to "john.doe@test.com",
+            "age" to 35,
+            "monthlyNetIncome" to 3500.0,
+            "bikeId" to "BIKE-900",
+            "bikeModel" to "Gravel Explorer 900",
+        )
+
+    private fun submission(input: Map<String, Any?>) =
+        post("/api/bike-leasing")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(mapper.writeValueAsString(input))
 }
