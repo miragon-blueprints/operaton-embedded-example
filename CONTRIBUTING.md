@@ -82,7 +82,7 @@ Build the backend OCI image; it produces `miravelo/app:1.0-SNAPSHOT`:
 <!-- /variant:kotlin-gradle -->
 <!-- variant:java-maven -->
 ```bash
-(cd java-maven && ./mvnw -pl service/app -am -DskipTests spring-boot:build-image)
+(cd java-maven && ./mvnw -DskipTests install && ./mvnw -pl service/app -DskipTests spring-boot:build-image)
 ```
 <!-- /variant:java-maven -->
 

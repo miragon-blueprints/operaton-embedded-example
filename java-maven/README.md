@@ -21,7 +21,7 @@ Run them from this directory; the Maven wrapper is included. Postgres comes from
 | Full build (arch + Checkstyle + unit + process + model validation + spec export) | `./mvnw verify` |
 | Mutation testing (gate 80) | `./mvnw -pl service/app -am test-compile org.pitest:pitest-maven:mutationCoverage` |
 | Regenerate the typed process API after editing a `.bpmn` | `./mvnw -pl service/app io.miragon:bpmn-to-code-maven:generate-bpmn-api` |
-| Build the OCI image `miravelo/app` | `./mvnw -pl service/app -am -DskipTests spring-boot:build-image` |
+| Build the OCI image `miravelo/app` | `./mvnw -DskipTests install && ./mvnw -pl service/app -DskipTests spring-boot:build-image` |
 
 ## 📂 Layout
 

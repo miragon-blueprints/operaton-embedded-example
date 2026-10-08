@@ -123,7 +123,7 @@ the engine in it under Platform Settings → Engines with base URL
 | Mutation testing (gate 80) | `./mvnw -pl service/app -am test-compile org.pitest:pitest-maven:mutationCoverage` |
 | Regenerate the typed BPMN process API (after editing a `.bpmn`) | `./mvnw -pl service/app io.miragon:bpmn-to-code-maven:generate-bpmn-api` |
 | Regenerate the OpenAPI contract | `./mvnw -pl service/app -am test -Dtest=OpenApiSpecExportTest -Dsurefire.failIfNoSpecifiedTests=false` |
-| Backend OCI image (`miravelo/app`) | `./mvnw -pl service/app -am -DskipTests spring-boot:build-image` |
+| Backend OCI image (`miravelo/app`) | `./mvnw -DskipTests install && ./mvnw -pl service/app -DskipTests spring-boot:build-image` |
 <!-- /variant:java-maven -->
 
 | Area (repo root) | Command |
